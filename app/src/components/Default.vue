@@ -24,6 +24,9 @@
         or paste file url <input v-model="path" />
       </p>
       <p>
+        set nickname <input v-model="nick" />
+      </p>
+      <p>
         <button v-on:click="onClickConnectToIRC">Connect to IRC</button>
         or
         <button v-on:click="onClickSaySometing">Say someting</button>
@@ -68,6 +71,25 @@
         data: [],
       }
     },
+    watch: {
+      'nick': {
+        handler (val, old) {
+          localStorage.setItem('nick', val)
+        },
+      },
+      'path': {
+        handler (val, old) {
+          localStorage.setItem('path', val)
+        },
+      },
+      'data': {
+        handler (val, old) {
+          if (val.length > 5120) {
+            this.data = []
+          }
+        },
+      },
+    },
     methods: {
       onClickFileSelector() {
         ipc.send('open-file-dialog')
@@ -102,6 +124,14 @@
       ipc.on('selected-directory', (event, path) => {
         this.path = path
       })
+      let nick = localStorage.getItem('nick')
+      if (nick) {
+        this.nick = nick
+      }
+      let path = localStorage.getItem('path')
+      if (path) {
+        this.path = path
+      }
     }
   }
 </script>
