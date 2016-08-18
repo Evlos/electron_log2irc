@@ -6,7 +6,7 @@ const pkg = require('./app/package.json')
 let config = {
   // Name of electron app
   // Will be used in production builds
-  name: 'electron_log2irc',
+  name: 'Log2IRC',
 
   // webpack-dev-server port
   port: 9080,
