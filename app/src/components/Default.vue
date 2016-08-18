@@ -8,6 +8,9 @@ input
   width: 300px
 table
   width: 450px
+span.status
+  margin-left: 12px
+  font-size: 12px
 .marginRight
   margin-right: 5px
 .textarea
@@ -107,6 +110,7 @@ table
   p
     button.button.green.marginRight(v-on:click='onClickConnectToIRC') Connect to IRC
     button.button(v-on:click='onClickSaySometing') Say "I'm a bot!"
+    span.status {{ ircStatus }}.
   .buttonGroup
     button.button.green(v-on:click='onClickStartWatch') Start watch
     .middle
@@ -132,6 +136,7 @@ table
     data () {
       return {
         ircClient: null,
+        ircStatus: 'disconnected',
         nick: 'bot___',
         channel: '#test',
         path: '/var/log/system.log',
@@ -150,6 +155,11 @@ table
           localStorage.setItem('path', val)
         },
       },
+      'channel': {
+        handler (val, old) {
+          localStorage.setItem('channel', val)
+        },
+      },
       'data': {
         handler (val, old) {
           if (val.length > 100) {
@@ -163,11 +173,19 @@ table
         ipc.send('open-file-dialog')
       },
       onClickConnectToIRC() {
+        this.ircStatus = 'connecting ..'
         this.ircClient = new irc.Client('chat.freenode.net', this.nick, {
+          showErrors: true,
+          autoRejoin: true,
           channels: [this.channel],
+          retryCount: 3,
+          retryDelay: 3000,
         })
-        this.ircClient.addListener('message', function (from, to, message) {
+        this.ircClient.addListener('message', (from, to, message) => {
           console.debug('IRC |', from + ' => ' + to + ': ' + message);
+        });
+        this.ircClient.addListener('names', (from, to, message) => {
+          this.ircStatus = 'connected'
         });
       },
       onClickSaySometing() {
@@ -201,6 +219,10 @@ table
       let path = localStorage.getItem('path')
       if (path) {
         this.path = path
+      }
+      let channel = localStorage.getItem('channel')
+      if (channel) {
+        this.channel = channel
       }
     }
   }
