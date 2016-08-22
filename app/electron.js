@@ -23,8 +23,8 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800
+    height: 565,
+    width: 900
   })
 
   mainWindow.loadURL(config.url)
@@ -59,6 +59,9 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+app.commandLine.appendSwitch('remote-debugging-port', '8315');
+app.commandLine.appendSwitch('host-rules', 'MAP * 127.0.0.1');
 
 ipc.on('open-file-dialog', function (event) {
   dialog.showOpenDialog({
