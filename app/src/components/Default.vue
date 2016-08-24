@@ -1,6 +1,8 @@
 <style lang="sass">
 *
   font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif
+*:focus
+  outline: none
 body
   width: 100%
   height: 100%
@@ -24,7 +26,7 @@ span.status
   padding: 10px
   font-size: 10px
 .button
-  background: #E0E1E2
+  background: #e0e1e2
   border: none
   padding: 11px 21px
   display: inline-block
@@ -34,9 +36,14 @@ span.status
   border-radius: 4px
   box-sizing: border-box
   height: 38px
+  cursor: pointer
+.button:hover
+  background: #cacbcd
 .button.green
-  background: rgb(26, 177, 62)
+  background: #21ba45
   color: white
+.button.green:hover
+  background: #16ab39
 .buttonGroup
   font-size: 14px
   display: inline-block
@@ -50,11 +57,16 @@ span.status
     border-radius: 4px
     box-sizing: border-box
     height: 38px
+    position: relative
+    padding-right: 310px
     input
-      height: 21px
-      margin-left: 10px
+      height: 36px
       border: none
-      padding: 0 10px
+      padding: 11px 21px
+      position: absolute
+      right: 1px
+      top: 1px
+      border-radius: 0px 4px 4px 0px
   .middle
     background: white
     border-radius: 50%
@@ -82,8 +94,9 @@ span.status
   padding-right: 251px
   .input
     position: absolute
-    top: 1px
-    height: 36px
+    top: 0px
+    height: 38px
+    right: 0px
     margin-left: 10px
     width: 240px
     border-radius: 0px 4px 4px 0px
@@ -107,12 +120,19 @@ span.status
     span.status {{ status.path }}.
   p
     .inputGroup
+      span IRC Host
+      input.input.group(v-model='host')
+    span.status auto saved.
+  p
+    .inputGroup
       span IRC Nickname
       input.input.group(v-model='nick')
+    span.status auto saved.
   p
     .inputGroup
       span IRC Channel
       input.input.group(v-model='channel')
+    span.status auto saved.
   p
     button.button.green.marginRight(v-on:click='onClickConnectToIRC') Connect to IRC
     button.button(v-on:click='onClickSaySometing') Say "I'm a bot!"
@@ -154,6 +174,7 @@ export default {
         path: 'file not found',
         watching: 'not watching',
       },
+      host: 'chat.freenode.net',
       nick: 'bot___',
       channel: '#test',
       path: '/var/log/system.log',
@@ -163,6 +184,11 @@ export default {
     }
   },
   watch: {
+    'host': {
+      handler (val, old) {
+        localStorage.setItem('host', val)
+      },
+    },
     'nick': {
       handler (val, old) {
         localStorage.setItem('nick', val)
@@ -200,7 +226,7 @@ export default {
     },
     onClickConnectToIRC() {
       this.status.irc = 'connecting ..'
-      this.client = new irc.Client('chat.freenode.net', this.nick, {
+      this.client = new irc.Client(this.host, this.nick, {
         showErrors: true,
         autoRejoin: true,
         channels: [this.channel],
@@ -240,7 +266,7 @@ export default {
     },
     onClickStartWatch() {
       this.status.watching = 'watching ..'
-      this.tail = new Tail('/var/log/system.log')
+      this.tail = new Tail(this.path)
       this.tail.on('line', (logs) => {
         this.logs.push(logs)
         if (this.client) {
@@ -266,6 +292,10 @@ export default {
     ipc.on('selected-directory', (event, path) => {
       this.path = path
     })
+    let host = localStorage.getItem('host')
+    if (host) {
+      this.host = host
+    }
     let nick = localStorage.getItem('nick')
     if (nick) {
       this.nick = nick
