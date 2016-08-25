@@ -1,6 +1,10 @@
-# electron_log2irc
+# Log2IRC
 
-> An electron-vue project
+> An electron-vue project that tailing and outputting changes of specified file to IRC channel.
+
+## Before download
+
+Please be aware that it may not work on Windows because of node-tail's compatibility.
 
 ## Build Setup
 
@@ -17,8 +21,7 @@ npm run build
 # run webpack in production
 npm run pack
 ```
-More information can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/docs/npm_scripts.html).
 
----
+## LICENSE
 
-This project was generated from [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about this project can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+GNU GENERAL PUBLIC LICENSE
