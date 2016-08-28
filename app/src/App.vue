@@ -1,5 +1,5 @@
 <style>
-  @import url(https://fonts.googleapis.com/css?family=Lato:300);
+  /*@import url(https://fonts.googleapis.com/css?family=Lato:300);*/
 
   * {
     margin: 0;
