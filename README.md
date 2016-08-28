@@ -6,6 +6,10 @@
 
 Please be aware that it may not work on Windows because of node-tail's compatibility.
 
+## Screenshots
+
+![](https://static.eternalelf.com/public/Screen%20Shot%202016-08-28%20at%2022.25.29.png)
+
 ## Build Setup
 
 ``` bash
